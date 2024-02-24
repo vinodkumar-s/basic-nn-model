@@ -5,13 +5,13 @@
 To develop a neural network regression model for the given dataset.
 
 ## THEORY
+Neural networks consist of simple input/output units called neurons. These units are interconnected and each connection has a weight associated with it. Neural networks are flexible and can be used for both classification and regression. In this article, we will see how neural networks can be applied to regression problems.
 
-Explain the problem statement
+In this model we will discuss with a neural network with 3 layers of neurons excluding input . First hidden layer with 7 neurons , Second hidden layer with 7 neurons and final Output layer with 1 neuron to predict the regression case scenario.
 
 ## Neural Network Model
 
-Include the neural network model diagram.
-
+![alt text](image.png)
 ## DESIGN STEPS
 
 ### STEP 1:
@@ -43,32 +43,85 @@ Plot the performance plot
 Evaluate the model with the testing data.
 
 ## PROGRAM
-### Name:
-### Register Number:
+### Name: VINOD KUMAR S
+### Register Number: 212222240116
 ```python
 
 Include your code here
+from google.colab import auth
+import gspread
+from google.auth import default
+import pandas as pd
 
+auth.authenticate_user()
+creds, _ = default()
+gc = gspread.authorize(creds)
+
+worksheet = gc.open('ML').sheet1
+
+rows = worksheet.get_all_values()
+
+df = pd.DataFrame(rows[1:], columns=rows[0])
+df = df.astype({'input':'float'})
+df = df.astype({'output':'float'})
+df.head()
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.preprocessing import MinMaxScaler
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+X = df[['input']].values
+y = df[['output']].values
+
+X
+
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size = 0.33,random_state = 33)
+
+Scaler = MinMaxScaler()
+Scaler.fit(X_train)
+X_train1 = Scaler.transform(X_train)
+ai_brain = Sequential([
+    Dense(7,activation='relu'),
+    Dense(7,activation='relu'),
+    Dense(1)
+])
+
+ai_brain.compile(optimizer = 'rmsprop' , loss = 'mse')
+
+ai_brain.fit(X_train1 , y_train,epochs = 1000)
+loss_df = pd.DataFrame(ai_brain.history.history)
+loss_df.plot()
+
+X_test1 = Scaler.transform(X_test)
+ai_brain.evaluate(X_test1,y_test)
+
+X_n1 = [[100]]
+X_n1_1 = Scaler.transform(X_n1)
+
+ai_brain.predict(X_n1_1)
 
 ```
 ## Dataset Information
 
-Include screenshot of the dataset
+![alt text](image-1.png)
 
 ## OUTPUT
 
 ### Training Loss Vs Iteration Plot
-
-Include your plot here
+![alt text](image-2.png)
 
 ### Test Data Root Mean Squared Error
 
-Find the test data root mean squared error
+![alt text](image-3.png)
 
 ### New Sample Data Prediction
-
-Include your sample input and output here
+![alt text](image-4.png)
 
 ## RESULT
 
-Include your result here
+Thus a neural network regression model for the given dataset is written and executed successfully.
+
+
